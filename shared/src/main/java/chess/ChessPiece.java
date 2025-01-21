@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -16,6 +17,20 @@ public class ChessPiece {
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessPiece that = (ChessPiece) o;
+        return pieceColor == that.pieceColor && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, type);
     }
 
     /**
@@ -53,37 +68,87 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> moves = new ArrayList<>();
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
 
         switch(getPieceType()) {
             case KING:
-
+                if(inBounds(row -1, col)){
+                    moves.add(new ChessMove(myPosition, new ChessPosition(row-1, col), null));
+                }
+                if(inBounds(row -1, col +1)){
+                    moves.add(new ChessMove(myPosition, new ChessPosition(row-1, col+1), null));
+                }
+                if(inBounds(row, col+1)){
+                    moves.add(new ChessMove(myPosition, new ChessPosition(row, col+1), null));
+                }
+                if(inBounds(row +1, col+1)){
+                    moves.add(new ChessMove(myPosition, new ChessPosition(row+1, col+1), null));
+                }
+                if(inBounds(row +1, col)){
+                    moves.add(new ChessMove(myPosition, new ChessPosition(row+1, col), null));
+                }
+                if(inBounds(row +1, col-1)){
+                    moves.add(new ChessMove(myPosition, new ChessPosition(row+1, col-1), null));
+                }
+                if(inBounds(row, col-1)){
+                    moves.add(new ChessMove(myPosition, new ChessPosition(row, col-1), null));
+                }
+                if(inBounds(row -1, col-1)){
+                    moves.add(new ChessMove(myPosition, new ChessPosition(row-1, col-1), null));
+                }
                 break;
 
-            case QUEEN:
-
-                break;
-
+//            case QUEEN:
+//
+//                break;
+//
             case BISHOP:
+                    int[][] directions = {
+//                      go southwest
+                        {-1, -1}, {-2, -2}, {-3, -3}, {-4, -4}, {-5, -5}, {-6, -6}, {-7, -7},
+//                      go southeast
+                        {-1, +1}, {-2, +2}, {-3, +3}, {-4, +4}, {-5, +5}, {-6, +6}, {-7, +7},
+//                      go northwest
+                        {+1, -1}, {+2, -2}, {+3, -3}, {+4, -4}, {+5, -5}, {+6, -6}, {+7, -7},
+//                      go northeast
+                        {+1, +1}, {+2, +2}, {+3, +3}, {+4, +4}, {+5, +5}, {+6, +6}, {+7, +7}
+                    };
+                    for (int[] direction : directions) {
+                        int newRow = row + direction[0];
+                        int newCol = col + direction[1];
 
+                        if (inBounds(newRow, newCol)) {
+                            ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                            moves.add(new ChessMove(myPosition, newPosition, null));
+                        }
+
+                    }
                 break;
-
-            case KNIGHT:
-
-                break;
-
-            case ROOK:
-
-                break;
-
-            case PAWN:
-
-                break;
+//
+//            case KNIGHT:
+//
+//                break;
+//
+//            case ROOK:
+//
+//                break;
+//
+//            case PAWN:
+//
+//                break;
+        }
+        for (ChessMove move : moves) {
+            ChessPosition startPosition = move.getStartPosition();
+            ChessPosition endPosition = move.getEndPosition();
+            System.out.println("Move from: (" + startPosition.getRow() + ", " + startPosition.getColumn() + ") " +
+                    "to: (" + endPosition.getRow() + ", " + endPosition.getColumn() + ")");
         }
         return moves;
     }
 //    create an is in bounds method that returns true or false if the next move is within the 8x8 board
-    public boolean inBounds (ChessPosition myPosition) {
-        return myPosition.getRow() <= 8 && myPosition.getRow() >= 1 && myPosition.getColumn() <= 8 && myPosition.getColumn() >= 1;
+    public boolean inBounds (int row, int col) {
+    return row >= 1 && row <= 8 && col >= 1 && col <= 8;
     }
 
 }
