@@ -105,24 +105,23 @@ public class ChessPiece {
 //
             case BISHOP:
                     int[][] directions = {
-//                      go southwest
-                        {-1, -1}, {-2, -2}, {-3, -3}, {-4, -4}, {-5, -5}, {-6, -6}, {-7, -7},
-//                      go southeast
-                        {-1, +1}, {-2, +2}, {-3, +3}, {-4, +4}, {-5, +5}, {-6, +6}, {-7, +7},
-//                      go northwest
-                        {+1, -1}, {+2, -2}, {+3, -3}, {+4, -4}, {+5, -5}, {+6, -6}, {+7, -7},
-//                      go northeast
-                        {+1, +1}, {+2, +2}, {+3, +3}, {+4, +4}, {+5, +5}, {+6, +6}, {+7, +7}
+                          {-1, +1}, {-1, -1}, {+1, -1}, {+1, +1}
                     };
                     for (int[] direction : directions) {
-                        int newRow = row + direction[0];
-                        int newCol = col + direction[1];
+                        int newRow = row;
+                        int newCol = col;
 
-                        if (inBounds(newRow, newCol)) {
+                        while (true) {
+                            newRow += direction[0];
+                            newCol += direction[1];
+
+                            if (!inBounds(newRow, newCol)) {
+                                break;
+                            }
+
                             ChessPosition newPosition = new ChessPosition(newRow, newCol);
                             moves.add(new ChessMove(myPosition, newPosition, null));
                         }
-
                     }
                 break;
 //
