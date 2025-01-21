@@ -53,6 +53,7 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> moves = new ArrayList<>();
+
         switch(getPieceType()) {
             case KING:
 
@@ -80,4 +81,9 @@ public class ChessPiece {
         }
         return moves;
     }
+//    create an is in bounds method that returns true or false if the next move is within the 8x8 board
+    public boolean inBounds (ChessPosition myPosition) {
+        return myPosition.getRow() <= 8 && myPosition.getRow() >= 1 && myPosition.getColumn() <= 8 && myPosition.getColumn() >= 1;
+    }
+
 }
