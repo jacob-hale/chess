@@ -73,29 +73,18 @@ public class ChessPiece {
 
         switch(getPieceType()) {
             case KING:
-                if(inBounds(row -1, col)){
-                    moves.add(new ChessMove(myPosition, new ChessPosition(row-1, col), null));
-                }
-                if(inBounds(row -1, col +1)){
-                    moves.add(new ChessMove(myPosition, new ChessPosition(row-1, col+1), null));
-                }
-                if(inBounds(row, col+1)){
-                    moves.add(new ChessMove(myPosition, new ChessPosition(row, col+1), null));
-                }
-                if(inBounds(row +1, col+1)){
-                    moves.add(new ChessMove(myPosition, new ChessPosition(row+1, col+1), null));
-                }
-                if(inBounds(row +1, col)){
-                    moves.add(new ChessMove(myPosition, new ChessPosition(row+1, col), null));
-                }
-                if(inBounds(row +1, col-1)){
-                    moves.add(new ChessMove(myPosition, new ChessPosition(row+1, col-1), null));
-                }
-                if(inBounds(row, col-1)){
-                    moves.add(new ChessMove(myPosition, new ChessPosition(row, col-1), null));
-                }
-                if(inBounds(row -1, col-1)){
-                    moves.add(new ChessMove(myPosition, new ChessPosition(row-1, col-1), null));
+                int[][] king_directions = {
+                        {-1, +1}, {-1, -1}, {+1, -1}, {+1, +1}, {0, -1}, {0, +1}, {-1, 0}, {+1, 0}
+                };
+                for (int[] direction : king_directions) {
+                    int newRow = row + direction[0];
+                    int newCol = col + direction[1];
+
+
+                    if (inBounds(newRow, newCol)){
+                        ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                        moves.add(new ChessMove(myPosition, newPosition, null));
+                    }
                 }
                 break;
 
@@ -151,3 +140,4 @@ public class ChessPiece {
     }
 
 }
+
