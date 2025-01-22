@@ -91,10 +91,38 @@ public class ChessPiece {
                 }
                 break;
 
-//            case QUEEN:
-//
-//                break;
-//
+            case QUEEN:
+                int[][] queen_directions = {
+                        {0, -1}, {0, +1}, {+1, 0}, {-1, 0}, {-1, +1}, {-1, -1}, {+1, -1}, {+1, +1}
+                };
+                for (int[] direction : queen_directions) {
+                    int newRow = row;
+                    int newCol = col;
+
+                    while (true) {
+                        newRow += direction[0];
+                        newCol += direction[1];
+
+                        if (!inBounds(newRow, newCol)) {
+                            break;
+                        }
+
+                        ChessPosition newPosition = new ChessPosition(newRow, newCol);
+
+                        if (canMove(newPosition, board)) {
+                            moves.add(new ChessMove(myPosition, newPosition, null));
+
+                            if (board.getPiece(newPosition) != null) {
+                                break;
+                            }
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                }
+                break;
+
             case BISHOP:
                     int[][] bishop_directions = {
                           {-1, +1}, {-1, -1}, {+1, -1}, {+1, +1}
@@ -147,7 +175,6 @@ public class ChessPiece {
 
                 break;
 
-//
             case ROOK:
                 int[][] rook_directions = {
                         {0, -1}, {0, +1}, {+1, 0}, {-1, 0}
@@ -251,12 +278,7 @@ public class ChessPiece {
                 }
                 break;
         }
-        for (ChessMove move : moves) {
-            ChessPosition startPosition = move.getStartPosition();
-            ChessPosition endPosition = move.getEndPosition();
-            System.out.println("Move from: (" + startPosition.getRow() + ", " + startPosition.getColumn() + ") " +
-                    "to: (" + endPosition.getRow() + ", " + endPosition.getColumn() + ")");
-        }
+
         return moves;
     }
 //    create an is in bounds method that returns true or false if the next move is within the 8x8 board
