@@ -106,11 +106,8 @@ public class ChessPiece {
                         while (true) {
                             newRow += direction[0];
                             newCol += direction[1];
-                            System.out.println("Checking position: (" + newRow + ", " + newCol + ")");
 
                             if (!inBounds(newRow, newCol)) {
-                                System.out.println("InBounds for (" + newRow + ", " + newCol + "): " + inBounds(newRow, newCol));
-
                                 break;
                             }
 
@@ -120,15 +117,12 @@ public class ChessPiece {
                                 moves.add(new ChessMove(myPosition, newPosition, null));
 
                                 if (board.getPiece(newPosition) != null) {
-                                    System.out.println("Stopping at (" + newRow + ", " + newCol + ") due to a piece on the board.");
                                     break;
                                 }
                             }
                                 else {
-                                    System.out.println("Invalid move to (" + newRow + ", " + newCol + ").");
                                     break;
-
-                            }
+                                }
                             }
                         }
 
@@ -136,9 +130,23 @@ public class ChessPiece {
 //
             case KNIGHT:
                 int[][] knight_directions = {
-                        {-1, -3}, {+1, -3}, {+3, -1}, {+3, +1},{-1, +3}, {+1, +3}, {-3, -1}, {-3, +1}
+                        {-1, -2}, {+1, -2}, {+2, -1}, {+2, +1},{-1, +2}, {+1, +2}, {-2, -1}, {-2, +1}
                 };
+                for (int [] direction : knight_directions){
+                    int newRow = row + direction[0];
+                    int newCol = col + direction[1];
+
+                    if (inBounds(newRow, newCol)){
+                        ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                        if (canMove(newPosition, board)){
+                            moves.add(new ChessMove(myPosition, newPosition, null));
+                        }
+                    }
+
+                }
+
                 break;
+
 //
 //            case ROOK:
 //
