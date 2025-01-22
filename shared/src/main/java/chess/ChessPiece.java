@@ -148,10 +148,39 @@ public class ChessPiece {
                 break;
 
 //
-//            case ROOK:
-//
-//                break;
-//
+            case ROOK:
+                int[][] rook_directions = {
+                        {0, -1}, {0, +1}, {+1, 0}, {-1, 0}
+                };
+                for (int[] direction : rook_directions) {
+                    int newRow = row;
+                    int newCol = col;
+
+                    while (true) {
+                        newRow += direction[0];
+                        newCol += direction[1];
+
+                        if (!inBounds(newRow, newCol)) {
+                            break;
+                        }
+
+                        ChessPosition newPosition = new ChessPosition(newRow, newCol);
+
+                        if (canMove(newPosition, board)) {
+                            moves.add(new ChessMove(myPosition, newPosition, null));
+
+                            if (board.getPiece(newPosition) != null) {
+                                break;
+                            }
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                }
+
+                break;
+
 //            case PAWN:
 //
 //                break;
