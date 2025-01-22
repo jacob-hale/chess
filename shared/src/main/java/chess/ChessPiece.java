@@ -87,6 +87,7 @@ public class ChessPiece {
                             moves.add(new ChessMove(myPosition, newPosition, null));
                         }
                     }
+
                 }
                 break;
 
@@ -127,9 +128,11 @@ public class ChessPiece {
 
                 break;
 //
-//            case KNIGHT:
-//
-//                break;
+            case KNIGHT:
+                int[][] knight_directions = {
+                        {-1, -3}, {+1, -3}, {+3, -1}, {+3, +1},{-1, +3}, {+1, +3}, {-3, -1}, {-3, +1}
+                };
+                break;
 //
 //            case ROOK:
 //
@@ -156,9 +159,11 @@ public class ChessPiece {
         if (target == null && inBounds(move.getRow(), move.getColumn())) {
             return true;
         }
-        else {
-            assert target != null;
+        if (inBounds(move.getRow(), move.getColumn())) {
             return target.pieceColor != this.pieceColor;
+        }
+        else{
+            return false;
         }
     }
 }
