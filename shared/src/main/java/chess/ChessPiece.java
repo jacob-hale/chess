@@ -106,8 +106,11 @@ public class ChessPiece {
                         while (true) {
                             newRow += direction[0];
                             newCol += direction[1];
+                            System.out.println("Checking position: (" + newRow + ", " + newCol + ")");
 
                             if (!inBounds(newRow, newCol)) {
+                                System.out.println("InBounds for (" + newRow + ", " + newCol + "): " + inBounds(newRow, newCol));
+
                                 break;
                             }
 
@@ -116,13 +119,16 @@ public class ChessPiece {
                             if (canMove(newPosition, board)) {
                                 moves.add(new ChessMove(myPosition, newPosition, null));
 
-                                if (board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() != this.pieceColor) {
+                                if (board.getPiece(newPosition) != null) {
+                                    System.out.println("Stopping at (" + newRow + ", " + newCol + ") due to a piece on the board.");
                                     break;
                                 }
                             }
                                 else {
+                                    System.out.println("Invalid move to (" + newRow + ", " + newCol + ").");
                                     break;
-                                }
+
+                            }
                             }
                         }
 
@@ -154,17 +160,16 @@ public class ChessPiece {
     public boolean inBounds (int row, int col) {
     return row >= 1 && row <= 8 && col >= 1 && col <= 8;
     }
+
     public boolean canMove(ChessPosition move, ChessBoard board) {
-        ChessPiece target = board.getPiece(move);
-        if (target == null && inBounds(move.getRow(), move.getColumn())) {
-            return true;
-        }
-        if (inBounds(move.getRow(), move.getColumn())) {
-            return target.pieceColor != this.pieceColor;
-        }
-        else{
+        if (!inBounds(move.getRow(), move.getColumn())) {
             return false;
         }
+
+        ChessPiece target = board.getPiece(move);
+
+        return target == null || target.pieceColor != this.pieceColor;
+        }
     }
-}
+
 
