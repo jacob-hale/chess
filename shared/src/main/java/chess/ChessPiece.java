@@ -83,7 +83,9 @@ public class ChessPiece {
 
                     if (inBounds(newRow, newCol)){
                         ChessPosition newPosition = new ChessPosition(newRow, newCol);
-                        moves.add(new ChessMove(myPosition, newPosition, null));
+                        if (canMove(newPosition, board)){
+                            moves.add(new ChessMove(myPosition, newPosition, null));
+                        }
                     }
                 }
                 break;
@@ -93,10 +95,10 @@ public class ChessPiece {
 //                break;
 //
             case BISHOP:
-                    int[][] directions = {
+                    int[][] bishop_directions = {
                           {-1, +1}, {-1, -1}, {+1, -1}, {+1, +1}
                     };
-                    for (int[] direction : directions) {
+                    for (int[] direction : bishop_directions) {
                         int newRow = row;
                         int newCol = col;
 
@@ -109,9 +111,20 @@ public class ChessPiece {
                             }
 
                             ChessPosition newPosition = new ChessPosition(newRow, newCol);
-                            moves.add(new ChessMove(myPosition, newPosition, null));
+
+                            if (canMove(newPosition, board)) {
+                                moves.add(new ChessMove(myPosition, newPosition, null));
+
+                                if (board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() != this.pieceColor) {
+                                    break;
+                                }
+                            }
+                                else {
+                                    break;
+                                }
+                            }
                         }
-                    }
+
                 break;
 //
 //            case KNIGHT:
@@ -138,6 +151,15 @@ public class ChessPiece {
     public boolean inBounds (int row, int col) {
     return row >= 1 && row <= 8 && col >= 1 && col <= 8;
     }
-
+    public boolean canMove(ChessPosition move, ChessBoard board) {
+        ChessPiece target = board.getPiece(move);
+        if (target == null && inBounds(move.getRow(), move.getColumn())) {
+            return true;
+        }
+        else {
+            assert target != null;
+            return target.pieceColor != this.pieceColor;
+        }
+    }
 }
 
