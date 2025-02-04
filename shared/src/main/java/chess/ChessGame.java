@@ -10,15 +10,16 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
-
+    private ChessBoard board;
     public ChessGame() {
+        this.board = new ChessBoard();
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return TeamColor.WHITE;
     }
 
     /**
@@ -47,6 +48,22 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         Collection<ChessMove> validMoves = new ArrayList<>();
+        ChessPiece piece = board.getPiece(startPosition);
+        if(piece == null){
+            return validMoves;
+        }
+        Collection<ChessMove> possibleMoves = piece.pieceMoves(board, startPosition);
+
+        for(ChessMove move:possibleMoves){
+            ChessPosition endPosition = move.getEndPosition();
+            ChessPiece targetPiece = board.getPiece(endPosition);
+
+            if (piece.canMove(endPosition, board)) {
+                validMoves.add(move);
+            }
+        }
+
+
 
         return validMoves;
     }
@@ -58,7 +75,12 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece = board.getPiece(move.getEndPosition());
+        if(piece == null){
+            throw new InvalidMoveException("Invalid Move");
+        }
+        board.addPiece(move.getEndPosition(), piece);
+//        ChessPiece board.getPiece(move.getStartPosition()) = null;
     }
 
     /**
