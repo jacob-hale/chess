@@ -11,15 +11,17 @@ import java.util.Collection;
  */
 public class ChessGame {
     private ChessBoard board;
+    private TeamColor currentTurn;
     public ChessGame() {
         this.board = new ChessBoard();
+        this.currentTurn = TeamColor.WHITE;
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        return TeamColor.WHITE;
+        return currentTurn;
     }
 
     /**
@@ -28,7 +30,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        this.currentTurn = team;
     }
 
     /**
@@ -47,18 +49,19 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        Collection<ChessMove> validMoves = new ArrayList<>();
         ChessPiece piece = board.getPiece(startPosition);
         if(piece == null){
-            return validMoves;
+            return null;
         }
         Collection<ChessMove> possibleMoves = piece.pieceMoves(board, startPosition);
+        Collection<ChessMove> validMoves = new ArrayList<>();
 
         for(ChessMove move:possibleMoves){
-            ChessPosition endPosition = move.getEndPosition();
-            ChessPiece targetPiece = board.getPiece(endPosition);
+            ChessBoard tempBoard = new ChessBoard(board);
+            tempBoard.addPiece(move.getEndPosition(), piece);
+            tempBoard.addPiece(move.getStartPosition(), null);
 
-            if (piece.canMove(endPosition, board)) {
+            if (!isInCheck(piece.getTeamColor())) {
                 validMoves.add(move);
             }
         }
@@ -76,11 +79,11 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPiece piece = board.getPiece(move.getEndPosition());
-        if(piece == null){
+        if(piece == null || piece.getTeamColor() != getTeamTurn()){
             throw new InvalidMoveException("Invalid Move");
         }
-        board.addPiece(move.getEndPosition(), piece);
-//        ChessPiece board.getPiece(move.getStartPosition()) = null;
+        Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
+
     }
 
     /**

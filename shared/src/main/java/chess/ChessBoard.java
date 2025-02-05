@@ -11,10 +11,22 @@ import java.util.Objects;
  */
 public class ChessBoard {
     private final ChessPiece[][] squares = new ChessPiece[8][8];
+
     public ChessBoard() {
         
     }
-
+    public ChessBoard(ChessBoard other) {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                if (other.squares[row][col] != null) {
+                    this.squares[row][col] = new ChessPiece(
+                            other.squares[row][col].getTeamColor(),
+                            other.squares[row][col].getPieceType()
+                    );
+                }
+            }
+        }
+    }
     /**
      * Adds a chess piece to the chessboard
      *
