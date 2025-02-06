@@ -126,14 +126,15 @@ public class ChessGame {
                 if (piece != null && piece.getTeamColor() != teamColor) {
                     Collection<ChessMove> possibleMoves = piece.pieceMoves(board, new ChessPosition(row + 1, col + 1));
                     for (ChessMove move : possibleMoves) {
-                        if (move.getEndPosition().equals(kingPosition)) {
+                        if (move.getEndPosition() == kingPosition) {
                             return true;
                         }
                     }
                 }
             }
         }
-        return false;    }
+        return false;
+    }
 
     /**
      * Determines if the given team is in checkmate
@@ -170,6 +171,9 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        if (isInCheck(teamColor)) {
+            return false;
+        }
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 ChessPiece piece = board.getPiece(new ChessPosition(row + 1, col + 1));
