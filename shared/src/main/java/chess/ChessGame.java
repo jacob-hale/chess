@@ -94,7 +94,7 @@ public class ChessGame {
         }
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
         if (!validMoves.contains(move) || validMoves == null) {
-            throw new InvalidMoveException("Invalid move: The move is not legal according to the rules.");
+            throw new InvalidMoveException("Invalid move: The move is not legal.");
         }
         if (move.getPromotionPiece() != null) {
             board.addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()));
