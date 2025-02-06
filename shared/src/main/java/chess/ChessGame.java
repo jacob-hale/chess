@@ -58,12 +58,16 @@ public class ChessGame {
 
         for(ChessMove move:possibleMoves){
             ChessBoard tempBoard = new ChessBoard(board);
-            tempBoard.addPiece(move.getEndPosition(), piece);
+            ChessPiece movingPiece = new ChessPiece(piece.getTeamColor(), piece.getPieceType());
+
+            tempBoard.addPiece(move.getEndPosition(), movingPiece);
             tempBoard.addPiece(move.getStartPosition(), null);
 
+            ChessBoard originalBoard = this.board;
             if (!isInCheck(piece.getTeamColor())) {
                 validMoves.add(move);
             }
+            this.board = originalBoard;
         }
 
 
@@ -120,7 +124,7 @@ public class ChessGame {
                     Collection<ChessMove> possibleMoves = piece.pieceMoves(board, currentPosition);
 
                     for (ChessMove move : possibleMoves){
-                        if (move.getEndPosition() == kingPosition) {
+                        if (move.getEndPosition().equals(kingPosition)) {
                             return true;
                         }
                     }
