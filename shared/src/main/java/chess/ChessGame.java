@@ -15,6 +15,7 @@ public class ChessGame {
     public ChessGame() {
         this.board = new ChessBoard();
         this.currentTurn = TeamColor.WHITE;
+        this.board.resetBoard();
     }
 
     /**
@@ -63,11 +64,13 @@ public class ChessGame {
             tempBoard.addPiece(move.getEndPosition(), movingPiece);
             tempBoard.addPiece(move.getStartPosition(), null);
 
-            ChessBoard originalBoard = this.board;
-            if (!isInCheck(piece.getTeamColor())) {
+            ChessBoard originalBoard = board;
+            board = tempBoard;
+            boolean isValidMove = !isInCheck(piece.getTeamColor());
+            board = originalBoard;
+            if (isValidMove) {
                 validMoves.add(move);
             }
-            this.board = originalBoard;
         }
 
 
