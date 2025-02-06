@@ -82,23 +82,22 @@ public class ChessGame {
         if (piece == null) {
             throw new InvalidMoveException("Invalid move: No piece at the start position.");
         }
-        if (piece.getTeamColor() != getTeamTurn()) {
+        if (piece.getTeamColor() != currentTurn) {
             throw new InvalidMoveException("Invalid move: It's not your turn.");
         }
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
-        if (!validMoves.contains(move)) {
+        if (!validMoves.contains(move) || validMoves == null) {
             throw new InvalidMoveException("Invalid move: The move is not legal according to the rules.");
         }
-        executeMove(move, piece);
-
-        setTeamTurn(currentTurn == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE);
-
-
-    }
-    private void executeMove(ChessMove move, ChessPiece piece) {
-        // Move the piece on the board
-        board.addPiece(move.getEndPosition(), piece);
+        if (move.getPromotionPiece() != null) {
+            board.addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()));
+        }
+        else {
+            board.addPiece(move.getEndPosition(), piece);
+        }
         board.addPiece(move.getStartPosition(), null);
+
+        currentTurn = (currentTurn == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
     }
 
     /**
