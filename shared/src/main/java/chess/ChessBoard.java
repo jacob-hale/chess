@@ -15,13 +15,15 @@ public class ChessBoard {
     public ChessBoard() {
         
     }
-    public ChessBoard(ChessBoard other) {
+
+//    creates a copy of the chessboard
+    public ChessBoard(ChessBoard board) {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
-                if (other.squares[row][col] != null) {
+                if (board.squares[row][col] != null) {
                     this.squares[row][col] = new ChessPiece(
-                            other.squares[row][col].getTeamColor(),
-                            other.squares[row][col].getPieceType()
+                            board.squares[row][col].getTeamColor(),
+                            board.squares[row][col].getPieceType()
                     );
                 }
             }

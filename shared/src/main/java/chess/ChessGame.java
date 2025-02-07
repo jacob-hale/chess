@@ -61,14 +61,15 @@ public class ChessGame {
 
 //        for each possible move make the move on a temporary board and see if it puts its team in check
         for(ChessMove move:possibleMoves){
-            ChessBoard tempBoard = new ChessBoard(board);
+            ChessBoard boardTemp = new ChessBoard(board);
             ChessPiece movingPiece = new ChessPiece(piece.getTeamColor(), piece.getPieceType());
 
-            tempBoard.addPiece(move.getEndPosition(), movingPiece);
-            tempBoard.addPiece(move.getStartPosition(), null);
+            boardTemp.addPiece(move.getEndPosition(), movingPiece);
+            boardTemp.addPiece(move.getStartPosition(), null);
 
+//            creates copy of board to use then replaces it with original
             ChessBoard originalBoard = board;
-            board = tempBoard;
+            board = boardTemp;
             boolean isValidMove = !isInCheck(piece.getTeamColor());
             board = originalBoard;
 //            if move doesn't put team in check, add it to the validMoves collection
