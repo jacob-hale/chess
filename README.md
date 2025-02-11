@@ -50,3 +50,114 @@ java -jar client/target/client-jar-with-dependencies.jar
 
 ♕ 240 Chess Client: chess.ChessPiece@7852e922
 ```
+## Sequence Diagram
+[SequenceDiagram link](https://sequencediagram.org/index.html?presentationMode=readOnly#initialData=IYYwLg9gTgBAwgGwJYFMB2YBQAHYUxIhK4YwDKKUAbpTngUSWDABLBoAmCtu+hx7ZhWqEUdPo0EwAIsDDAAgiBAoAzqswc5wAEbBVKGBx2ZM6MFACeq3ETQBzGAAYAdAE5M9qBACu2GADEaMBUljAASij2SKoWckgQaIEA7gAWSGBiiKikALQAfOSUNFAAXDAA2gAKAPJkACoAujAA9D4GUAA6aADeAETtlMEAtih9pX0jYwA0MH246snQHOPz+qp9s30ow8BICKs7ewcAvpjCJTAFrOxclOX9g1BTqy9bC6pLUCsTH5tzR32h12QLObE43Fg1wuonKUCiMUyUAAFJForFKJEAI4+NRgACU52KoiuhVk8iUKnU5XsKDAAFUOsinlNCeTFMo1KpSUYdOUAGJITgwRmUdkwHRhFnAUaYdmUrlXaHElTlNA+BAIIkiFQ8+Wc6kwEDwuQoUUop7stnaBXqHnGcoKDgcEUddnaqgk676qmqcrGlCmhQ+MCpZHAEOpK1ym0G7nXB0wJ0u4Oh90w3W5a7gu5lCIIjFQSKqDVYHOQpWFC73GCPDovCZvOYR0P1CAAa3Qq0gnbQfTO1ah12y5nKACYnE5unWhjKxo25-8+i3Um3e92O12zugOKYvL5-AFoOxaTAADIQaJJAJpDJZZDmHmD8rVOpNVoGdQJNDTgb1xcLqMS4fF8PxrOo-YepQPLljWM7PABkyLu86ygasfxgrcFbKjqKDlAgl5CsiF5XtiuKxISGaGN6sa+jSdLmsy-6jNaFJxvafIwIKwrmu6PqKlmVYqnhMCWtoHpemStFcv6JqZKmYYrtG-F2gmnHJkmkbpsJlY3BCNYkUKxalpgsFDkJ1BwX+s5AYBMzNpGa5dhMPZblB5nwA+GDjpOv7SrZSFAVsK5OX2Lmbn226cHu3h+IEXgoOg56Xr4zA3ukmSYCOeQWSUL7SAAomeBX1AVzQtJ+qjft0IURe5MFYTWtW9qZjVQrlsIwAR9ipeGjkRZROk0WxdFGCg3DyZGfWtgNMYjQJhSJpEwwQDQmlpuJVG6WZ5QkalxkIGWbW6c+tYDsU0GCZ5ORgD5ThmNFnixYe8IumeiIwAA4nO3LpXeWVecwOF5ZUn0leV9hzjV-UtYODX6XmzXoK1CNPsJ+GIt9oyqNNq6zVtw0cqNtJgApuOhaxRMLbyApCimWniSp8bA51SmbUNUnzYaJNY2oyKU7a8aLZx72xF9P1zVTqks6qMCQ9jFSNBJmbZm1u2Yz9B1HajV2nf08tqOMFQuCbjTnZZHnZbdMATlOvR9AbGylMbptRbuT0HoE2A+FA2DcPAcmGLzKQZfeN1oxbL61A0ENQ8EMPoL+BsAHKIS85uXKrCPlEjaCzPrc6pwF6co7mEeerLAamrz5MRbMcCB7zZF4oNuF6tJ3N0mTucC+xam08KCl8R3zMdbLbPyMr1Gc1LfpGo3c7IgbykjxxjrOuLozaW3V07QHgaZE3agmWZJ0XXmBejAAktI4wAIxjgAzBnl3DoDd1J3ON-30-bsxZ7ARLDjQIskGAAApCAQpN6GACDoBAoB2wA3DsDGs1R6TvhaAbaGM1ey-j9sAIBUA4AQAIlAVYAB1FgV9SpLgNt-UoD9n71SzrmHOCc861nmPAwhxDSEUKoTQrYdDb4MN-qXbCY8RIACtIFoBrrnWYEChRHxxC3Ke7cuZzxJt3dhvdfRry4nTdaUZGar11ujGAE9gDqMJoLeiYAa7CL0dTRM3EXS82Hpos+uEaRzm3hXaeMgR7lD8FoQ+i9l7aGcapYW5R6TYDCUHPx7Md4sMhOUJRci5xa3Ea-XKcEX6W3fjbScD13b7jigELwBDPKBlgMAbAftCDxESCHf6Vty6oMKsVUq5VjDMMKHvEA3A8D81ye1IoPijQjJRK3AJGjZ7+hmWMpmBjEB1KTJqIJk8CZpJrOsvAOTT7mMjmdZhb8bp3TKUAA)
+
+```mermaid
+sequenceDiagram
+    actor Client
+    participant Server
+    participant Handler
+    participant Service
+    participant DataAccess
+    database db
+
+    entryspacing 0.9
+    group #navy Registration #white
+    Client -> Server: [POST] /user\n{"username":"name", "password":"pass", "email":"email"}
+    Server -> Handler: {"username":"name", "password":"pass", "email":"email"}
+    Handler -> Service: register(RegisterRequest)
+    Service -> DataAccess: getUser(username)
+    DataAccess -> db: Find UserData by username
+    DataAccess --> Service: null
+    Service -> DataAccess: createUser(userData)
+    DataAccess -> db: Add UserData
+    Service -> DataAccess: createAuth(authData)
+    DataAccess -> db: Add AuthData
+    Service --> Handler: RegisterResult
+    Handler --> Server: {"username":"name", "authToken":"token"}
+    Server --> Client: 200\n{"username":"name", "authToken":"token"}
+    end
+    
+    group #orange Login #white
+    Client -> Server: [POST] /session\n{"username":"name", "password":"pass"}
+    Server -> Handler: {"username":"name", "password":"pass"}
+    Handler -> Service: login(LoginRequest)
+    Service -> DataAccess: getUser(username)
+    DataAccess -> db: Find UserData
+    DataAccess --> Service: userData
+    Service -> DataAccess: createAuth(authData)
+    DataAccess -> db: Add AuthData
+    Service --> Handler: LoginResult
+    Handler --> Server: {"username":"name", "authToken":"token"}
+    Server --> Client: 200\n{"username":"name", "authToken":"token"}
+    end
+    
+    group #green Logout #white
+    Client -> Server: [DELETE] /session\nauthToken
+    Server -> Handler: authToken
+    Handler -> Service: logout(authToken)
+    Service -> DataAccess: deleteAuth(authToken)
+    DataAccess -> db: Remove AuthData
+    Service --> Handler: LogoutResult
+    Handler --> Server: {}
+    Server --> Client: 200
+    end
+    
+    group #red List Games #white
+    Client -> Server: [GET] /game\nauthToken
+    Server -> Handler: authToken
+    Handler -> Service: listGames(authToken)
+    Service -> DataAccess: getAuth(authToken)
+    DataAccess -> db: Find AuthData
+    DataAccess --> Service: authData
+    Service -> DataAccess: getGames()
+    DataAccess -> db: List Games
+    DataAccess --> Service: games[]
+    Service --> Handler: ListGamesResult
+    Handler --> Server: {"games":[...]}
+    Server --> Client: 200\n{"games":[...]}
+    end
+    
+    group #purple Create Game #white
+    Client -> Server: [POST] /game\nauthToken\n{"gameName":"name"}
+    Server -> Handler: authToken, {"gameName":"name"}
+    Handler -> Service: createGame(authToken, CreateGameRequest)
+    Service -> DataAccess: getAuth(authToken)
+    DataAccess -> db: Find AuthData
+    DataAccess --> Service: authData
+    Service -> DataAccess: createGame(gameData)
+    DataAccess -> db: Add GameData
+    Service --> Handler: CreateGameResult
+    Handler --> Server: {"gameID":123}
+    Server --> Client: 200\n{"gameID":123}
+    end
+    
+    group #yellow Join Game #black
+    Client -> Server: [PUT] /game\nauthToken\n{"playerColor":"WHITE", "gameID":123}
+    Server -> Handler: authToken, {"playerColor":"WHITE", "gameID":123}
+    Handler -> Service: joinGame(authToken, JoinGameRequest)
+    Service -> DataAccess: getAuth(authToken)
+    DataAccess -> db: Find AuthData
+    DataAccess --> Service: authData
+    Service -> DataAccess: getGame(gameID)
+    DataAccess -> db: Find GameData
+    DataAccess --> Service: gameData
+    Service -> DataAccess: updateGame(gameData)
+    DataAccess -> db: Update GameData
+    Service --> Handler: JoinGameResult
+    Handler --> Server: {}
+    Server --> Client: 200
+    end
+    
+    group #gray Clear application #white
+    Client -> Server: [DELETE] /db
+    Server -> Handler: clear()
+    Handler -> Service: clear()
+    Service -> DataAccess: clear()
+    DataAccess -> db: Clear All Data
+    Service --> Handler: ClearResult
+    Handler --> Server: {}
+    Server --> Client: 200
+    end
+```\
