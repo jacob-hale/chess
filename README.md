@@ -97,6 +97,9 @@ sequenceDiagram
     Client -> Server: [DELETE] /session\nauthToken
     Server -> Handler: authToken
     Handler -> Service: logout(authToken)
+    Service -> DataAccess: getAuth(authToken)
+    DataAccess -> db: Find AuthData
+    DataAccess --> Service: authData
     Service -> DataAccess: deleteAuth(authToken)
     DataAccess -> db: Remove AuthData
     Service --> Handler: LogoutResult
@@ -128,6 +131,7 @@ sequenceDiagram
     DataAccess --> Service: authData
     Service -> DataAccess: createGame(gameData)
     DataAccess -> db: Add GameData
+    DataAccess --> Service: gameID
     Service --> Handler: CreateGameResult
     Handler --> Server: {"gameID":123}
     Server --> Client: 200\n{"gameID":123}
