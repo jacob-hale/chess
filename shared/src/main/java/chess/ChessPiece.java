@@ -76,83 +76,21 @@ public class ChessPiece {
                 int[][] kingDirections = {
                         {-1, +1}, {-1, -1}, {+1, -1}, {+1, +1}, {0, -1}, {0, +1}, {-1, 0}, {+1, 0}
                 };
-                for (int[] direction : kingDirections) {
-                    int newRow = row + direction[0];
-                    int newCol = col + direction[1];
-
-
-                    if (inBounds(newRow, newCol)){
-                        ChessPosition newPosition = new ChessPosition(newRow, newCol);
-                        if (canMove(newPosition, board)){
-                            moves.add(new ChessMove(myPosition, newPosition, null));
-                        }
-                    }
-
-                }
+                directionsKing(board, myPosition, moves, row, col, kingDirections);
                 break;
 
             case QUEEN:
                 int[][] queenDirections = {
                         {0, -1}, {0, +1}, {+1, 0}, {-1, 0}, {-1, +1}, {-1, -1}, {+1, -1}, {+1, +1}
                 };
-                for (int[] direction : queenDirections) {
-                    int newRow = row;
-                    int newCol = col;
-
-                    while (true) {
-                        newRow += direction[0];
-                        newCol += direction[1];
-
-                        if (!inBounds(newRow, newCol)) {
-                            break;
-                        }
-
-                        ChessPosition newPosition = new ChessPosition(newRow, newCol);
-
-                        if (canMove(newPosition, board)) {
-                            moves.add(new ChessMove(myPosition, newPosition, null));
-
-                            if (board.getPiece(newPosition) != null) {
-                                break;
-                            }
-                        }
-                        else {
-                            break;
-                        }
-                    }
-                }
+                directionsQueen(board, myPosition, moves, row, col, queenDirections);
                 break;
 
             case BISHOP:
                     int[][] bishopDirections = {
                           {-1, +1}, {-1, -1}, {+1, -1}, {+1, +1}
                     };
-                    for (int[] direction : bishopDirections) {
-                        int newRow = row;
-                        int newCol = col;
-
-                        while (true) {
-                            newRow += direction[0];
-                            newCol += direction[1];
-
-                            if (!inBounds(newRow, newCol)) {
-                                break;
-                            }
-
-                            ChessPosition newPosition = new ChessPosition(newRow, newCol);
-
-                            if (canMove(newPosition, board)) {
-                                moves.add(new ChessMove(myPosition, newPosition, null));
-
-                                if (board.getPiece(newPosition) != null) {
-                                    break;
-                                }
-                            }
-                                else {
-                                    break;
-                                }
-                            }
-                        }
+                directionsQueen(board, myPosition, moves, row, col, bishopDirections);
 
                 break;
 //
@@ -160,18 +98,7 @@ public class ChessPiece {
                 int[][] knightDirections = {
                         {-1, -2}, {+1, -2}, {+2, -1}, {+2, +1},{-1, +2}, {+1, +2}, {-2, -1}, {-2, +1}
                 };
-                for (int [] direction : knightDirections){
-                    int newRow = row + direction[0];
-                    int newCol = col + direction[1];
-
-                    if (inBounds(newRow, newCol)){
-                        ChessPosition newPosition = new ChessPosition(newRow, newCol);
-                        if (canMove(newPosition, board)){
-                            moves.add(new ChessMove(myPosition, newPosition, null));
-                        }
-                    }
-
-                }
+                directionsKing(board, myPosition, moves, row, col, knightDirections);
 
                 break;
 
@@ -179,32 +106,7 @@ public class ChessPiece {
                 int[][] rookDirections = {
                         {0, -1}, {0, +1}, {+1, 0}, {-1, 0}
                 };
-                for (int[] direction : rookDirections) {
-                    int newRow = row;
-                    int newCol = col;
-
-                    while (true) {
-                        newRow += direction[0];
-                        newCol += direction[1];
-
-                        if (!inBounds(newRow, newCol)) {
-                            break;
-                        }
-
-                        ChessPosition newPosition = new ChessPosition(newRow, newCol);
-
-                        if (canMove(newPosition, board)) {
-                            moves.add(new ChessMove(myPosition, newPosition, null));
-
-                            if (board.getPiece(newPosition) != null) {
-                                break;
-                            }
-                        }
-                        else {
-                            break;
-                        }
-                    }
-                }
+                directionsQueen(board, myPosition, moves, row, col, rookDirections);
 
                 break;
 
@@ -237,16 +139,7 @@ public class ChessPiece {
                     if (inBounds(newRow, newCol)) {
                         ChessPosition newPosition = new ChessPosition(newRow, newCol);
                         if (board.getPiece(newPosition) == null) {
-                            if ((newRow == 8 && board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.WHITE)
-                                    || (newRow == 1 && board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.BLACK)){
-                                moves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
-                                moves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
-                                moves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
-                                moves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
-                            }
-                            else {
-                                moves.add(new ChessMove(myPosition, newPosition, null));
-                            }
+                            directionsPawn(board, myPosition, moves, newRow, newPosition);
 
                         }
                         else{
@@ -263,14 +156,7 @@ public class ChessPiece {
                         ChessPosition newPosition = new ChessPosition(newRow, newCol);
                         if (board.getPiece(newPosition) != null) {
                             if (board.getPiece(newPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                                if ((newRow == 8 && board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.WHITE) || (newRow == 1 && board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.BLACK)) {
-                                    moves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
-                                    moves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
-                                    moves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
-                                    moves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
-                                } else {
-                                    moves.add(new ChessMove(myPosition, newPosition, null));
-                                }
+                                directionsPawn(board, myPosition, moves, newRow, newPosition);
                             }
                         }
                     }
@@ -282,7 +168,66 @@ public class ChessPiece {
 
         return moves;
     }
-//    create an is in bounds method that returns true or false if the next move is within the 8x8 board
+
+    private void directionsPawn(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves, int newRow, ChessPosition newPosition) {
+        if ((newRow == 8 && board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.WHITE)
+                || (newRow == 1 && board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.BLACK)){
+            moves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
+            moves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
+            moves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
+            moves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
+        }
+        else {
+            moves.add(new ChessMove(myPosition, newPosition, null));
+        }
+    }
+
+    private void directionsQueen(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves, int row, int col, int[][] queenDirections) {
+        for (int[] direction : queenDirections) {
+            int newRow = row;
+            int newCol = col;
+
+            while (true) {
+                newRow += direction[0];
+                newCol += direction[1];
+
+                if (!inBounds(newRow, newCol)) {
+                    break;
+                }
+
+                ChessPosition newPosition = new ChessPosition(newRow, newCol);
+
+                if (canMove(newPosition, board)) {
+                    moves.add(new ChessMove(myPosition, newPosition, null));
+
+                    if (board.getPiece(newPosition) != null) {
+                        break;
+                    }
+                }
+                else {
+                    break;
+                }
+            }
+        }
+    }
+
+    private void directionsKing(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves, int row, int col, int[][] kingDirections) {
+        for (int[] direction : kingDirections) {
+            int newRow = row + direction[0];
+            int newCol = col + direction[1];
+
+
+            if (inBounds(newRow, newCol)){
+                ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                if (canMove(newPosition, board)){
+                    moves.add(new ChessMove(myPosition, newPosition, null));
+                }
+            }
+
+        }
+    }
+
+    //    create an is in bounds method that returns true or false if the next move is within the 8x8 board
     public boolean inBounds (int row, int col) {
     return row >= 1 && row <= 8 && col >= 1 && col <= 8;
     }
