@@ -37,6 +37,9 @@ public class Server {
         Spark.post("/game", (req, res) -> new GameHandler(gameService, authDAO).createGame(req, res));
 
         Spark.get("/game", (req, res) -> new GameHandler(gameService, authDAO).listGames(req, res));
+
+        Spark.put("/game", (req, res) -> new GameHandler(gameService, authDAO).joinPlayer(req, res));
+
         Spark.awaitInitialization();
         return Spark.port();
     }

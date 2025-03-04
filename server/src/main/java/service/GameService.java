@@ -1,5 +1,6 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.GameDAO;
 import dataaccess.DataAccessException;
 import model.GameData;
@@ -27,5 +28,28 @@ public class GameService {
 
     public Collection<GameData> listGames() throws DataAccessException {
         return gameDAO.listGames();
+    }
+
+    public void joinPlayer(int gameID, ChessGame.TeamColor playerColor, String username) throws DataAccessException {
+        GameData game = gameDAO.getGame(gameID);
+        if (game == null) {
+            throw new DataAccessException("Error: Game not found");
+        }
+        if (playerColor == ChessGame.TeamColor.WHITE && game.whiteUsername() != null) {
+            throw new DataAccessException("Error: White team already taken");
+        }
+        if (playerColor == ChessGame.TeamColor.BLACK && game.blackUsername() != null) {
+            throw new DataAccessException("Error: Black team already taken");
+        }
+
+        GameData updatedGame = new GameData(
+                game.gameID(),
+                playerColor == ChessGame.TeamColor.WHITE ? username : game.whiteUsername(),
+                playerColor == ChessGame.TeamColor.BLACK ? username : game.blackUsername(),
+                game.gameName(),
+                game.game()
+        );
+        gameDAO.updateGame(updatedGame);
+
     }
 }

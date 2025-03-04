@@ -5,6 +5,7 @@ import model.GameData;
 import service.GameService;
 import service.CreateGameRequest;
 import service.CreateGameResult;
+import service.JoinRequest;
 import spark.Request;
 import spark.Response;
 import dataaccess.DataAccessException;
@@ -58,6 +59,34 @@ public class GameHandler {
         } catch (DataAccessException e) {
             if (e.getMessage().contains("Unauthorized")) {
                 res.status(401);
+            } else {
+                res.status(500);
+            }
+            return gson.toJson(new ErrorResponse(e.getMessage()));
+        }
+    }
+
+    public Object joinPlayer(Request req, Response res) {
+        try {
+            String authToken = req.headers("authorization");
+            if (authToken == null || authDAO.getAuth(authToken) == null) {
+                throw new DataAccessException("Error: Unauthorized");
+            }
+
+            JoinRequest joinRequest = gson.fromJson(req.body(), JoinRequest.class);
+            String username = authDAO.getAuth(authToken).username();
+
+            gameService.joinPlayer(joinRequest.gameID(), joinRequest.playerColor(), username);
+
+            res.status(200);
+            return "{}";
+        } catch (DataAccessException e) {
+            if (e.getMessage().contains("Unauthorized")) {
+                res.status(401);
+            } else if (e.getMessage().contains("already taken")) {
+                res.status(403);
+            } else if (e.getMessage().contains("Bad Request")) {
+                res.status(400);
             } else {
                 res.status(500);
             }
