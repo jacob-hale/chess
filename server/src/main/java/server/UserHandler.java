@@ -58,4 +58,15 @@ public class UserHandler {
             return gson.toJson(new ErrorResponse(e.getMessage()));
         }
     }
+    public Object logout(Request req, Response res) {
+        try {
+            String authToken = req.headers("authorization");
+            userService.logout(authToken);
+            res.status(200);
+            return "{}";
+        } catch (DataAccessException e) {
+            res.status(401);
+            return gson.toJson(new ErrorResponse(e.getMessage()));
+        }
+    }
 }
