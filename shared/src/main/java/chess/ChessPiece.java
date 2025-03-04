@@ -73,10 +73,10 @@ public class ChessPiece {
 
         switch(getPieceType()) {
             case KING:
-                int[][] king_directions = {
+                int[][] kingDirections = {
                         {-1, +1}, {-1, -1}, {+1, -1}, {+1, +1}, {0, -1}, {0, +1}, {-1, 0}, {+1, 0}
                 };
-                for (int[] direction : king_directions) {
+                for (int[] direction : kingDirections) {
                     int newRow = row + direction[0];
                     int newCol = col + direction[1];
 
@@ -92,10 +92,10 @@ public class ChessPiece {
                 break;
 
             case QUEEN:
-                int[][] queen_directions = {
+                int[][] queenDirections = {
                         {0, -1}, {0, +1}, {+1, 0}, {-1, 0}, {-1, +1}, {-1, -1}, {+1, -1}, {+1, +1}
                 };
-                for (int[] direction : queen_directions) {
+                for (int[] direction : queenDirections) {
                     int newRow = row;
                     int newCol = col;
 
@@ -124,10 +124,10 @@ public class ChessPiece {
                 break;
 
             case BISHOP:
-                    int[][] bishop_directions = {
+                    int[][] bishopDirections = {
                           {-1, +1}, {-1, -1}, {+1, -1}, {+1, +1}
                     };
-                    for (int[] direction : bishop_directions) {
+                    for (int[] direction : bishopDirections) {
                         int newRow = row;
                         int newCol = col;
 
@@ -157,10 +157,10 @@ public class ChessPiece {
                 break;
 //
             case KNIGHT:
-                int[][] knight_directions = {
+                int[][] knightDirections = {
                         {-1, -2}, {+1, -2}, {+2, -1}, {+2, +1},{-1, +2}, {+1, +2}, {-2, -1}, {-2, +1}
                 };
-                for (int [] direction : knight_directions){
+                for (int [] direction : knightDirections){
                     int newRow = row + direction[0];
                     int newCol = col + direction[1];
 
@@ -176,10 +176,10 @@ public class ChessPiece {
                 break;
 
             case ROOK:
-                int[][] rook_directions = {
+                int[][] rookDirections = {
                         {0, -1}, {0, +1}, {+1, 0}, {-1, 0}
                 };
-                for (int[] direction : rook_directions) {
+                for (int[] direction : rookDirections) {
                     int newRow = row;
                     int newCol = col;
 
@@ -209,26 +209,26 @@ public class ChessPiece {
                 break;
 
             case PAWN:
-                int[][] pawn_directions;
-                int[][] pawn_captures;
+                int[][] pawnDirections;
+                int[][] pawnCaptures;
                 if (board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.WHITE){
-                    pawn_captures = new int[][] {{+1, +1}, {+1, -1}};
+                    pawnCaptures = new int[][] {{+1, +1}, {+1, -1}};
                     if (myPosition.getRow() == 2){
-                        pawn_directions = new int[][] {{+1, 0}, {+2, 0}};
+                        pawnDirections = new int[][] {{+1, 0}, {+2, 0}};
                     }
                     else {
-                        pawn_directions = new int[][] {{+1, 0}};
+                        pawnDirections = new int[][] {{+1, 0}};
                     }
                 }
                 else {
-                    pawn_captures = new int[][] {{-1, +1}, {-1, -1}};
+                    pawnCaptures = new int[][] {{-1, +1}, {-1, -1}};
                     if (myPosition.getRow() == 7) {
-                        pawn_directions = new int[][] {{-1, 0}, {-2, 0}};
+                        pawnDirections = new int[][] {{-1, 0}, {-2, 0}};
                     } else {
-                        pawn_directions = new int[][] {{-1, 0}};
+                        pawnDirections = new int[][] {{-1, 0}};
                     }
                 }
-                for (int[] direction : pawn_directions) {
+                for (int[] direction : pawnDirections) {
                     int newRow = row;
                     int newCol = col;
                     newRow += direction[0];
@@ -237,7 +237,8 @@ public class ChessPiece {
                     if (inBounds(newRow, newCol)) {
                         ChessPosition newPosition = new ChessPosition(newRow, newCol);
                         if (board.getPiece(newPosition) == null) {
-                            if ((newRow == 8 && board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.WHITE) || (newRow == 1 && board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.BLACK)){
+                            if ((newRow == 8 && board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.WHITE)
+                                    || (newRow == 1 && board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.BLACK)){
                                 moves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
                                 moves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
                                 moves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
@@ -253,7 +254,7 @@ public class ChessPiece {
                         }
                     }
                 }
-                for(int[] direction : pawn_captures){
+                for(int[] direction : pawnCaptures){
                     int newRow = row;
                     int newCol = col;
                     newRow += direction[0];
