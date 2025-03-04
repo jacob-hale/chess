@@ -76,9 +76,6 @@ public class GameHandler {
             JoinRequest joinRequest = gson.fromJson(req.body(), JoinRequest.class);
             String username = authDAO.getAuth(authToken).username();
 
-            if (joinRequest.playerColor() == null) {
-                throw new DataAccessException("Error: Bad request - Invalid team color");
-            }
 
             gameService.joinPlayer(joinRequest.gameID(), joinRequest.playerColor(), username);
 
@@ -89,7 +86,7 @@ public class GameHandler {
                 res.status(401);
             } else if (e.getMessage().contains("already taken")) {
                 res.status(403);
-            } else if (e.getMessage().contains("Bad Request")) {
+            } else if (e.getMessage().contains("Bad Request") || e.getMessage().contains("Game not found")) {
                 res.status(400);
             } else {
                 res.status(500);
