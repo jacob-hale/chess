@@ -31,6 +31,10 @@ public class GameService {
     }
 
     public void joinPlayer(int gameID, ChessGame.TeamColor playerColor, String username) throws DataAccessException {
+        if (playerColor == null) {
+            throw new DataAccessException("Error: Bad request - Invalid team color");
+        }
+
         GameData game = gameDAO.getGame(gameID);
         if (game == null) {
             throw new DataAccessException("Error: Game not found");
