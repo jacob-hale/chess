@@ -7,6 +7,7 @@ import dataaccess.DataAccessException;
 
 public class ErrorHandler {
     private static final Gson GSON = new Gson();
+
     public static String handleDataAccessException(DataAccessException e, Response res) {
         if (e.getMessage().contains("Unauthorized")) {
             res.status(401);
@@ -15,4 +16,7 @@ public class ErrorHandler {
         }
         return GSON.toJson(new UserHandler.ErrorResponse(e.getMessage()));
     }
+    private record ErrorResponse(String message) {}
 }
+
+
