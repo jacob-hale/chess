@@ -4,7 +4,7 @@ import dataaccess.GameDAO;
 import dataaccess.DataAccessException;
 import model.GameData;
 
-import java.util.Map;
+import java.util.Collection;
 import java.util.UUID;
 
 public class GameService {
@@ -23,5 +23,9 @@ public class GameService {
 
         gameDAO.insertGame(game);
         return gameID;
+    }
+
+    public Collection<GameData> listGames() throws DataAccessException {
+        return gameDAO.listGames();
     }
 }
