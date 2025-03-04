@@ -197,7 +197,7 @@ public class ChessPiece {
             moves.add(new ChessMove(myPosition, newPosition, null));
         }
     }
-// this s really good
+
     private void directionsQueen(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves,
                                  int row, int col, int[][] directions) {
         for (int[] direction : directions) {
