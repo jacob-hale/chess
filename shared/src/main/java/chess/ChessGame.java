@@ -180,6 +180,10 @@ public class ChessGame {
             return false;
         }
 //        goes through each square and checks all pieces of teamColor, if validMoves is empty, teamColor is in checkmate
+        return helper(teamColor);
+    }
+
+    private boolean helper(TeamColor teamColor) {
         for (int row = 1; row <= 8; row++){
             for (int col = 1; col <= 8; col ++){
                 ChessPosition position = new ChessPosition(row, col);
@@ -210,21 +214,7 @@ public class ChessGame {
             return false;
         }
 //        goes through each square. If every piece of teamColor can't move, they are in stalemate
-        for (int row = 1; row <= 8; row++) {
-            for (int col = 1; col <= 8; col++) {
-                ChessPosition position = new ChessPosition(row, col);
-                ChessPiece piece = board.getPiece(position);
-
-                if (piece != null && piece.getTeamColor() == teamColor){
-                    Collection<ChessMove> validMoves = validMoves(position);
-                    if (!validMoves.isEmpty()) {
-                        return false;
-                    }
-                }
-            }
-        }
-
-        return true;
+        return helper(teamColor);
     }
 
     /**

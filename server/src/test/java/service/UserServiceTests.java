@@ -1,72 +1,73 @@
 package service;
 
-import chess.ChessGame;
 import dataaccess.DataAccessException;
-import dataaccess.MemoryGameDAO;
-import model.GameData;
+import dataaccess.MemoryAuthDAO;
+import dataaccess.MemoryUserDAO;
+import model.AuthData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UserServiceTests {
-    private GameService gameService;
-    private MemoryGameDAO gameDAO;
+class UserServiceTests {
+
+    private UserService userService;
+    private MemoryUserDAO userDAO;
+    private MemoryAuthDAO authDAO;
 
     @BeforeEach
     void setUp() {
-        gameDAO = new MemoryGameDAO();
-        gameService = new GameService(gameDAO);
+        userDAO = new MemoryUserDAO();
+        authDAO = new MemoryAuthDAO();
+        userService = new UserService(userDAO, authDAO);
     }
 
     @Test
-    void createGamePositive() throws DataAccessException {
-        int gameID = gameService.createGame("Test Game");
-        assertTrue(gameID > 0, "Game ID should be positive");
-        GameData game = gameDAO.getGame(gameID);
-        assertNotNull(game, "Game should exist in the database");
-        assertEquals("Test Game", game.gameName(), "Game name should match");
+    void registerPositive() throws DataAccessException {
+        AuthData authData = userService.register(new RegisterRequest("user1", "password", "user1@example.com"));
+        assertNotNull(authData, "AuthData should not be null");
+        assertEquals("user1", authData.username(), "Username should match");
+        assertNotNull(authData.authToken(), "Auth token should not be null");
     }
 
     @Test
-    void createGameNegative() {
-        assertThrows(DataAccessException.class, () -> gameService.createGame(null),
-                "Creating a game with a null name should throw an exception");
-        assertThrows(DataAccessException.class, () -> gameService.createGame(""),
-                "Creating a game with an empty name should throw an exception");
+    void registerNegative() {
+        assertThrows(DataAccessException.class, () -> userService.register(new RegisterRequest(null, "password", "user1@example.com")),
+                "Registering with a null username should throw an exception");
+        assertThrows(DataAccessException.class, () -> userService.register(new RegisterRequest("user1", null, "user1@example.com")),
+                "Registering with a null password should throw an exception");
+        assertThrows(DataAccessException.class, () -> userService.register(new RegisterRequest("user1", "password", null)),
+                "Registering with a null email should throw an exception");
     }
 
     @Test
-    void listGamesPositive() throws DataAccessException {
-        gameService.createGame("Game 1");
-        gameService.createGame("Game 2");
-        Collection<GameData> games = gameService.listGames();
-        assertEquals(2, games.size(), "There should be 2 games in the list");
+    void loginPositive() throws DataAccessException {
+        userService.register(new RegisterRequest("user1", "password", "user1@example.com"));
+        AuthData authData = userService.login("user1", "password");
+        assertNotNull(authData, "AuthData should not be null");
+        assertEquals("user1", authData.username(), "Username should match");
+        assertNotNull(authData.authToken(), "Auth token should not be null");
     }
 
     @Test
-    void joinPlayerPositive() throws DataAccessException {
-        int gameID = gameService.createGame("Test Game");
-        gameService.joinPlayer(gameID, ChessGame.TeamColor.WHITE, "user1");
-        GameData game = gameDAO.getGame(gameID);
-        assertEquals("user1", game.whiteUsername(), "User should be assigned to the white team");
+    void loginNegative() throws DataAccessException {
+        userService.register(new RegisterRequest("user1", "password", "user1@example.com"));
+        assertThrows(DataAccessException.class, () -> userService.login("user1", "wrongpassword"),
+                "Logging in with an incorrect password should throw an exception");
+        assertThrows(DataAccessException.class, () -> userService.login("nonexistent", "password"),
+                "Logging in with a nonexistent username should throw an exception");
     }
 
     @Test
-    void joinPlayerNegativeInvalidColor() throws DataAccessException {
-        int gameID = gameService.createGame("Test Game");
-        assertThrows(DataAccessException.class, () -> gameService.joinPlayer(gameID, null, "user1"),
-                "Joining with a null team color should throw an exception");
+    void logoutPositive() throws DataAccessException {
+        AuthData authData = userService.register(new RegisterRequest("user1", "password", "user1@example.com"));
+        userService.logout(authData.authToken());
+        assertNull(authDAO.getAuth(authData.authToken()), "Auth token should be deleted after logout");
     }
 
     @Test
-    void joinPlayerNegativeTeamFull() throws DataAccessException {
-        int gameID = gameService.createGame("Test Game");
-        gameService.joinPlayer(gameID, ChessGame.TeamColor.WHITE, "user1");
-        assertThrows(DataAccessException.class, () -> gameService.joinPlayer(gameID, ChessGame.TeamColor.WHITE, "user2"),
-                "Joining a full team should throw an exception");
+    void logoutNegative() {
+        assertThrows(DataAccessException.class, () -> userService.logout("invalidToken"),
+                "Logging out with an invalid auth token should throw an exception");
     }
-
 }
