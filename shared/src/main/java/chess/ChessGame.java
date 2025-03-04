@@ -51,34 +51,35 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
-//        if spot is empty
-        if(piece == null){
+        if (piece == null) {
             return null;
         }
-//        get the piece's possible moves
+
         Collection<ChessMove> possibleMoves = piece.pieceMoves(board, startPosition);
         Collection<ChessMove> validMoves = new ArrayList<>();
 
-//        for each possible move make the move on a temporary board and see if it puts its team in check
-        for(ChessMove move:possibleMoves){
-            ChessBoard boardTemp = new ChessBoard(board);
-            ChessPiece movingPiece = new ChessPiece(piece.getTeamColor(), piece.getPieceType());
-
-            boardTemp.addPiece(move.getEndPosition(), movingPiece);
-            boardTemp.addPiece(move.getStartPosition(), null);
-
-//            creates copy of board to use then replaces it with original
-            ChessBoard originalBoard = board;
-            board = boardTemp;
-            boolean isValidMove = !isInCheck(piece.getTeamColor());
-            board = originalBoard;
-//            if move doesn't put team in check, add it to the validMoves collection
-            if (isValidMove) {
+        for (ChessMove move : possibleMoves) {
+            if (isMoveValid(move, piece)) {
                 validMoves.add(move);
             }
         }
 
         return validMoves;
+    }
+
+    private boolean isMoveValid(ChessMove move, ChessPiece piece) {
+        ChessBoard boardTemp = new ChessBoard(board);
+        ChessPiece movingPiece = new ChessPiece(piece.getTeamColor(), piece.getPieceType());
+
+        boardTemp.addPiece(move.getEndPosition(), movingPiece);
+        boardTemp.addPiece(move.getStartPosition(), null);
+
+        ChessBoard originalBoard = board;
+        board = boardTemp;
+        boolean isValidMove = !isInCheck(piece.getTeamColor());
+        board = originalBoard;
+
+        return isValidMove;
     }
 
     /**
