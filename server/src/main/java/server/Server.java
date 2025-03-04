@@ -1,8 +1,8 @@
 package server;
 
-import dataaccess.MemoryUserDAO;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
+import dataAccess.MemoryUserDAO;
+import dataAccess.MemoryAuthDAO;
+import dataAccess.MemoryGameDAO;
 import service.ClearService;
 import service.UserService;
 import service.GameService;

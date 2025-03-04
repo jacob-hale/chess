@@ -4,9 +4,7 @@ import com.google.gson.Gson;
 import service.*;
 import spark.Request;
 import spark.Response;
-import dataaccess.DataAccessException;
-
-import java.util.Objects;
+import dataAccess.DataAccessException;
 
 public class UserHandler {
     private final UserService userService;
