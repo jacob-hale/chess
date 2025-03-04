@@ -225,6 +225,7 @@ public class ChessPiece {
         }
     }
 
+
     private void directionsKing(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves,
                                 int row, int col, int[][] directions) {
         for (int[] direction : directions) {
@@ -243,6 +244,7 @@ public class ChessPiece {
     private boolean inBounds(int row, int col) {
         return row >= 1 && row <= 8 && col >= 1 && col <= 8;
     }
+
 
     private boolean canMove(ChessPosition move, ChessBoard board) {
         ChessPiece target = board.getPiece(move);
