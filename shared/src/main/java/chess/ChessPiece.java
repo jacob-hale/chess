@@ -73,43 +73,63 @@ public class ChessPiece {
 
         switch (getPieceType()) {
             case KING:
-                int[][] kingDirections = {
-                        {-1, +1}, {-1, -1}, {+1, -1}, {+1, +1}, {0, -1},
-                        {0, +1}, {-1, 0}, {+1, 0}
-                };
-                directionsKing(board, myPosition, moves, row, col, kingDirections);
+                calculateKingMoves(board, myPosition, moves, row, col);
                 break;
             case QUEEN:
-                int[][] queenDirections = {
-                        {0, -1}, {0, +1}, {+1, 0}, {-1, 0}, {-1, +1},
-                        {-1, -1}, {+1, -1}, {+1, +1}
-                };
-                directionsQueen(board, myPosition, moves, row, col, queenDirections);
+                calculateQueenMoves(board, myPosition, moves, row, col);
                 break;
             case BISHOP:
-                int[][] bishopDirections = {
-                        {-1, +1}, {-1, -1}, {+1, -1}, {+1, +1}
-                };
-                directionsQueen(board, myPosition, moves, row, col, bishopDirections);
+                calculateBishopMoves(board, myPosition, moves, row, col);
                 break;
             case KNIGHT:
-                int[][] knightDirections = {
-                        {-1, -2}, {+1, -2}, {+2, -1}, {+2, +1},
-                        {-1, +2}, {+1, +2}, {-2, -1}, {-2, +1}
-                };
-                directionsKing(board, myPosition, moves, row, col, knightDirections);
+                calculateKnightMoves(board, myPosition, moves, row, col);
                 break;
             case ROOK:
-                int[][] rookDirections = {
-                        {0, -1}, {0, +1}, {+1, 0}, {-1, 0}
-                };
-                directionsQueen(board, myPosition, moves, row, col, rookDirections);
+                calculateRookMoves(board, myPosition, moves, row, col);
                 break;
             case PAWN:
                 calculatePawnMoves(board, myPosition, moves, row, col);
                 break;
         }
         return moves;
+    }
+
+    private void calculateKingMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves, int row, int col) {
+        int[][] kingDirections = {
+                {-1, +1}, {-1, -1}, {+1, -1}, {+1, +1}, {0, -1},
+                {0, +1}, {-1, 0}, {+1, 0}
+        };
+        directionsKing(board, myPosition, moves, row, col, kingDirections);
+    }
+
+    private void calculateQueenMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves, int row, int col) {
+        int[][] queenDirections = {
+                {0, -1}, {0, +1}, {+1, 0}, {-1, 0}, {-1, +1},
+                {-1, -1}, {+1, -1}, {+1, +1}
+        };
+        directionsQueen(board, myPosition, moves, row, col, queenDirections);
+    }
+
+    private void calculateBishopMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves, int row, int col) {
+        int[][] bishopDirections = {
+                {-1, +1}, {-1, -1}, {+1, -1}, {+1, +1}
+        };
+        directionsQueen(board, myPosition, moves, row, col, bishopDirections);
+    }
+
+    private void calculateKnightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves, int row, int col) {
+        int[][] knightDirections = {
+                {-1, -2}, {+1, -2}, {+2, -1}, {+2, +1},
+                {-1, +2}, {+1, +2}, {-2, -1}, {-2, +1}
+        };
+        directionsKing(board, myPosition, moves, row, col, knightDirections);
+    }
+
+    private void calculateRookMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves, int row, int col) {
+        int[][] rookDirections = {
+                {0, -1}, {0, +1}, {+1, 0}, {-1, 0}
+        };
+        directionsQueen(board, myPosition, moves, row, col, rookDirections);
     }
 
     private void calculatePawnMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves, int row, int col) {
