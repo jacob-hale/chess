@@ -1,8 +1,8 @@
 package service;
 
 import chess.ChessGame;
-import dataAccess.GameDAO;
-import dataAccess.DataAccessException;
+import dataaccess.GameDAO;
+import dataaccess.DataAccessException;
 import model.GameData;
 
 import java.util.Collection;

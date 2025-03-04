@@ -8,8 +8,8 @@ import service.CreateGameResult;
 import service.JoinRequest;
 import spark.Request;
 import spark.Response;
-import dataAccess.DataAccessException;
-import dataAccess.AuthDAO;
+import dataaccess.DataAccessException;
+import dataaccess.AuthDAO;
 import java.util.Collection;
 
 
