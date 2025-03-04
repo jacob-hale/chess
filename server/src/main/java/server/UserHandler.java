@@ -40,7 +40,7 @@ public class UserHandler {
 
         }
     }
-    private record ErrorResponse(String message) {}
+    public record ErrorResponse(String message) {}
 
     public Object login(Request req,Response res) {
         try {
