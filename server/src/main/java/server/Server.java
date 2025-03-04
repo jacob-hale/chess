@@ -17,10 +17,10 @@ public class Server {
         // Register your endpoints and handle exceptions here.
         var userDAO = new MemoryUserDAO();
         var authDAO = new MemoryAuthDAO();
-        var gameDao = new MemoryGameDAO();
+        var gameDAO = new MemoryGameDAO();
         var userService = new UserService(userDAO, authDAO);
-        var clearService = new ClearService(userDAO, authDAO);
-        var gameService = new GameService(gameDao);
+        var clearService = new ClearService(userDAO, authDAO, gameDAO);
+        var gameService = new GameService(gameDAO);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.delete("/db", (req, res) -> {
@@ -36,6 +36,7 @@ public class Server {
 
         Spark.post("/game", (req, res) -> new GameHandler(gameService, authDAO).createGame(req, res));
 
+        Spark.get("/game", (req, res) -> new GameHandler(gameService, authDAO).listGames(req, res));
         Spark.awaitInitialization();
         return Spark.port();
     }
