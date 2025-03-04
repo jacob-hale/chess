@@ -46,6 +46,7 @@ public class GameServiceTests {
         assertEquals(2, games.size(), "There should be 2 games in the list");
     }
 
+
     @Test
     void joinPlayerPositive() throws DataAccessException {
         int gameID = gameService.createGame("Test Game");
