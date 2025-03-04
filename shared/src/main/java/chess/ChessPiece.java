@@ -70,7 +70,6 @@ public class ChessPiece {
         Collection<ChessMove> moves = new ArrayList<>();
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
-
         switch(getPieceType()) {
             case KING:
                 int[][] kingDirections = {
@@ -79,7 +78,6 @@ public class ChessPiece {
                 };
                 directionsKing(board, myPosition, moves, row, col, kingDirections);
                 break;
-
             case QUEEN:
                 int[][] queenDirections = {
                         {0, -1}, {0, +1}, {+1, 0}, {-1, 0}, {-1, +1},
@@ -87,32 +85,25 @@ public class ChessPiece {
                 };
                 directionsQueen(board, myPosition, moves, row, col, queenDirections);
                 break;
-
             case BISHOP:
                     int[][] bishopDirections = {
                           {-1, +1}, {-1, -1}, {+1, -1}, {+1, +1}
                     };
                 directionsQueen(board, myPosition, moves, row, col, bishopDirections);
-
                 break;
-//
             case KNIGHT:
                 int[][] knightDirections = {
                         {-1, -2}, {+1, -2}, {+2, -1}, {+2, +1},
                         {-1, +2}, {+1, +2}, {-2, -1}, {-2, +1}
                 };
                 directionsKing(board, myPosition, moves, row, col, knightDirections);
-
                 break;
-
             case ROOK:
                 int[][] rookDirections = {
                         {0, -1}, {0, +1}, {+1, 0}, {-1, 0}
                 };
                 directionsQueen(board, myPosition, moves, row, col, rookDirections);
-
                 break;
-
             case PAWN:
                 int[][] pawnDirections;
                 int[][] pawnCaptures;
@@ -164,12 +155,9 @@ public class ChessPiece {
                             }
                         }
                     }
-
-
                 }
                 break;
         }
-
         return moves;
     }
 

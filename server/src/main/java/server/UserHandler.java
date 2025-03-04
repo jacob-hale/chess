@@ -48,12 +48,7 @@ public class UserHandler {
             return gson.toJson(new LoginResult(authData.username(), authData.authToken()));
         }
         catch (DataAccessException e) {
-            if (e.getMessage().contains("Unauthorized")) {
-                res.status(401);
-            } else {
-                res.status(500);
-            }
-            return gson.toJson(new ErrorResponse(e.getMessage()));
+            return ErrorHandler.handleDataAccessException(e, res);
         }
     }
     public Object logout(Request req, Response res) {

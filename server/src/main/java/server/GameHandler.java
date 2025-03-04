@@ -35,15 +35,7 @@ public class GameHandler {
             res.status(200);
             return gson.toJson(new CreateGameResult(gameID));
         } catch (DataAccessException e) {
-            if (e.getMessage().contains("Unauthorized")) {
-                res.status(401);
-            } else if (e.getMessage().contains("Bad Request")) {
-                res.status(400);
-            } else {
-                res.status(500);
-            }
-            return gson.toJson(new ErrorResponse(e.getMessage()));
-
+            return ErrorHandler.handleDataAccessException(e, res);
         }
     }
 
