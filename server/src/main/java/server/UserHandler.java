@@ -18,11 +18,15 @@ public class UserHandler {
         try {
             RegisterRequest registerRequest = gson.fromJson(req.body(), RegisterRequest.class);
 
-            if (registerRequest.password() == null || registerRequest.username() == null || registerRequest.email() == null) {
+            String username = registerRequest.username();
+            String password = registerRequest.password();
+            String email = registerRequest.email();
+
+            if (username == null || password == null || email == null) {
                 res.status(400);
                 return gson.toJson(new ErrorResponse("Error: Bad request"));
             }
-            var authData = userService.register(registerRequest);
+            var authData = userService.register(username, password, email);
 
             res.status(200);
             return gson.toJson(new RegisterResult(authData.username(), authData.authToken()));
