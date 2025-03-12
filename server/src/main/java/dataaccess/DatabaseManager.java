@@ -14,6 +14,11 @@ public class DatabaseManager {
      */
     static {
         try {
+            System.out.println("Loading MySQL JDBC driver...");
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            System.out.println("MySQL JDBC driver loaded successfully!");
+
+            System.out.println("Loading db.properties...");
             try (var propStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
                 if (propStream == null) {
                     throw new Exception("Unable to load db.properties");
@@ -26,10 +31,13 @@ public class DatabaseManager {
 
                 var host = props.getProperty("db.host");
                 var port = Integer.parseInt(props.getProperty("db.port"));
-                CONNECTION_URL = String.format("jdbc:mysql://%s:%d", host, port);
+                CONNECTION_URL = String.format("jdbc:mysql://%s:%d/%s", host, port, DATABASE_NAME);
+                System.out.println("Database connection URL: " + CONNECTION_URL);
             }
         } catch (Exception ex) {
-            throw new RuntimeException("unable to process db.properties. " + ex.getMessage());
+            System.err.println("Error during initialization: " + ex.getMessage());
+            ex.printStackTrace();
+            throw new RuntimeException("Unable to initialize database. " + ex.getMessage());
         }
     }
 
