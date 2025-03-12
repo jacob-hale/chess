@@ -12,6 +12,14 @@ public class DatabaseManager {
     /*
      * Load the database information for the db.properties file.
      */
+
+    static {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver"); // Register the MySQL driver
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Failed to load MySQL JDBC driver", e);
+        }
+    }
     static {
         try {
             try (var propStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
@@ -26,7 +34,7 @@ public class DatabaseManager {
 
                 var host = props.getProperty("db.host");
                 var port = Integer.parseInt(props.getProperty("db.port"));
-                CONNECTION_URL = String.format("jdbc:mysql://%s:%d", host, port);
+                CONNECTION_URL = String.format("jdbc:mysql://%s:%d/%s", host, port, DATABASE_NAME);
             }
         } catch (Exception ex) {
             throw new RuntimeException("unable to process db.properties. " + ex.getMessage());
@@ -38,8 +46,13 @@ public class DatabaseManager {
      */
     static void createDatabase() throws DataAccessException {
         try {
+            // Need to use a connection URL without the database name
+            String connectionURL = String.format("jdbc:mysql://%s:%d",
+                    CONNECTION_URL.split("/")[2].split(":")[0],
+                    Integer.parseInt(CONNECTION_URL.split(":")[3].split("/")[0]));
+
             var statement = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
-            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            var conn = DriverManager.getConnection(connectionURL, USER, PASSWORD);
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
@@ -81,7 +94,8 @@ public class DatabaseManager {
                         "gameID INT AUTO_INCREMENT PRIMARY KEY, " +
                         "gameName VARCHAR(255) NOT NULL, " +
                         "whiteUsername VARCHAR(255), " +
-                        "blackUsername VARCHAR(255))",
+                        "blackUsername VARCHAR(255), " +
+                        "game TEXT)",
 
                 "CREATE TABLE IF NOT EXISTS auth (" +
                         "authToken VARCHAR(255) PRIMARY KEY, " +
