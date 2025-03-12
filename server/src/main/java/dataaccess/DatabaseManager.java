@@ -14,11 +14,6 @@ public class DatabaseManager {
      */
     static {
         try {
-            System.out.println("Loading MySQL JDBC driver...");
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            System.out.println("MySQL JDBC driver loaded successfully!");
-
-            System.out.println("Loading db.properties...");
             try (var propStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
                 if (propStream == null) {
                     throw new Exception("Unable to load db.properties");
@@ -31,13 +26,10 @@ public class DatabaseManager {
 
                 var host = props.getProperty("db.host");
                 var port = Integer.parseInt(props.getProperty("db.port"));
-                CONNECTION_URL = String.format("jdbc:mysql://%s:%d/%s", host, port, DATABASE_NAME);
-                System.out.println("Database connection URL: " + CONNECTION_URL);
+                CONNECTION_URL = String.format("jdbc:mysql://%s:%d", host, port);
             }
         } catch (Exception ex) {
-            System.err.println("Error during initialization: " + ex.getMessage());
-            ex.printStackTrace();
-            throw new RuntimeException("Unable to initialize database. " + ex.getMessage());
+            throw new RuntimeException("unable to process db.properties. " + ex.getMessage());
         }
     }
 
@@ -50,36 +42,6 @@ public class DatabaseManager {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
-            }
-
-            // Create tables
-            try (var tableConn = getConnection()) {
-                var createUsersTable = """
-                CREATE TABLE IF NOT EXISTS users (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    username VARCHAR(50) NOT NULL UNIQUE,
-                    password VARCHAR(255) NOT NULL
-                )""";
-                var createGamesTable = """
-                CREATE TABLE IF NOT EXISTS games (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    game_name VARCHAR(100) NOT NULL,
-                    white_username VARCHAR(50),
-                    black_username VARCHAR(50),
-                    game_state JSON NOT NULL
-                )""";
-                var createAuthTokensTable = """
-                CREATE TABLE IF NOT EXISTS auth_tokens (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    username VARCHAR(50) NOT NULL,
-                    token VARCHAR(255) NOT NULL UNIQUE
-                )""";
-
-                try (var stmt = tableConn.createStatement()) {
-                    stmt.execute(createUsersTable);
-                    stmt.execute(createGamesTable);
-                    stmt.execute(createAuthTokensTable);
-                }
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
@@ -105,6 +67,35 @@ public class DatabaseManager {
             return conn;
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
+        }
+    }
+    public static void initializeDatabase() throws DataAccessException {
+        createDatabase();
+        String[] createTables = {
+                "CREATE TABLE IF NOT EXISTS users (" +
+                        "username VARCHAR(255) PRIMARY KEY, " +
+                        "password VARCHAR(255) NOT NULL, " +
+                        "email VARCHAR(255) NOT NULL)",
+
+                "CREATE TABLE IF NOT EXISTS games (" +
+                        "gameID INT AUTO_INCREMENT PRIMARY KEY, " +
+                        "gameName VARCHAR(255) NOT NULL, " +
+                        "whiteUsername VARCHAR(255), " +
+                        "blackUsername VARCHAR(255))",
+
+                "CREATE TABLE IF NOT EXISTS auth (" +
+                        "authToken VARCHAR(255) PRIMARY KEY, " +
+                        "username VARCHAR(255) NOT NULL)"
+        };
+
+        try (Connection conn = getConnection()) {
+            for (String sql : createTables) {
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    stmt.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Error initializing database: " + e.getMessage());
         }
     }
 }
